@@ -4,7 +4,7 @@ const userRoutes = require('./routes/userRoutes');
 const db = require('./models/db');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 6000;
 
 app.use(bodyParser.json());
 app.use('/api', userRoutes);
