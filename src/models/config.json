@@ -1,10 +1,10 @@
 {
-    "development": {
-      "username": "notariq",
-      "password": "kogontogol",
-      "database": "user-sonata",
-      "host": "localhost",
-      "port": 5432,
-      "dialect": "postgres"
-    }
+  "development": {
+    "username": "admin",
+    "password": "pw123",
+    "database": "userservice_db",
+    "host": "postgres",
+    "port": 5432,
+    "dialect": "postgres"
   }
+}

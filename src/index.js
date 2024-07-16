@@ -9,12 +9,11 @@ const PORT = process.env.PORT || 6000;
 app.use(bodyParser.json());
 app.use('/api', userRoutes);
 
-db.sequelize.sync()
-  .then(() => {
+db.sequelize.sync().then(() => {
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
-  })
-  .catch(err => {
+  }).catch(err => {
     console.log('Error: ' + err);
-  });
+  }
+);
