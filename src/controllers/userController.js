@@ -1,8 +1,17 @@
 //const rabbitmq = require('../rabbitmq');
-//const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const db = require('../models/db');
 const User = db.User;
+const { generateToken } = require('../middleware/authMiddleware')
+
+exports.validateToken = async (req, res) => {
+  try {
+    const user = req.user.user;
+    res.status(200).json(user);
+  } catch {
+    res.status(400).json({ error: error.message });
+  };
+};
 
 exports.registerUser = async (req, res) => {
   try {
@@ -22,8 +31,9 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    
     const user = await User.findOne({ where: { email } });
-
+    
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -33,9 +43,9 @@ exports.loginUser = async (req, res) => {
       return res.status(401).json({ error: 'Incorrect password' });
     }
 
-    //rabbitmq.publishToQueue('user_events', { type: 'USER_LOGIN', isLoggedIn: true });
+    const token = generateToken({user});
 
-    res.status(200).json({ message: 'Login successful', user });
+    res.status(200).json({ message: 'Login successful', token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

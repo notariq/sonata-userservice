@@ -1,4 +1,3 @@
-const Sequelize = require('sequelize');
 /*
 const config = require('./config.json').development;
 
@@ -6,9 +5,11 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
   host: config.host,
   port: config.port,
   dialect: config.dialect
-});
-*/
-const databaseUrl = process.env.DATABASE_URL || 'postgres://notariq:kogontogol@localhost:5432/user-sonata';
+  });
+  */
+const Sequelize = require('sequelize');
+
+const databaseUrl = process.env.DATABASE_URL || 'postgresql://notariq:kogontogol@localhost:5432/user-sonata';
 
 // Create a new Sequelize instance
 const sequelize = new Sequelize(databaseUrl, {
