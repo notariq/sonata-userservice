@@ -11,7 +11,6 @@ const Sequelize = require('sequelize');
 
 const databaseUrl = process.env.DATABASE_URL || 'postgresql://notariq:kogontogol@localhost:5432/user-sonata';
 
-// Create a new Sequelize instance
 const sequelize = new Sequelize(databaseUrl, {
   dialect: 'postgres',
   protocol: 'postgres'

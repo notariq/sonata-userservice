@@ -3,6 +3,9 @@ const amqp = require('amqplib/callback_api');
 let channel = null;
 const MQ_URI = process.env.MQ_URI || 'amqp://localhost:5672';
 
+const RABBIT_MQ_QUEUES = ['NEW_PLAYLIST', 'DELETE_PLAYLIST']
+
+// Connect to RabbitMQ
 amqp.connect(MQ_URI, (error0, connection) => {
     if (error0) {
         throw error0;
@@ -11,19 +14,35 @@ amqp.connect(MQ_URI, (error0, connection) => {
         if (error1) {
             throw error1;
         }
+        console.log('Connected to RabbitMQ');
         channel = ch;
+        
+        // Initiates Queues
+        RABBIT_MQ_QUEUES.map((queue) => {
+            channel.assertQueue(queue, { durable: true });
+            channel.consume(queue, (msg) => {
+                if (msg !== null) {
+                    channel.ack(msg);
+                    console.log('Message consumed from', queue);
+                }
+            });
+        });
     });
 });
 
+// Function to publish a message to a queue
+// The messages are supposed to be already in JSON
+// Just need need the 'content' property
 const publishToQueue = async (queueName, data) => {
     if (!channel) {
         throw new Error("Channel is not created yet");
     }
     channel.assertQueue(queueName, { durable: true });
-    console.log(`${data.type} Queue is created`);
     channel.sendToQueue(queueName, Buffer.from(JSON.stringify(data)), { persistent: true });
+    console.log('Message created for', queueName);
 };
 
+// Function to consume messages from a queue
 const consumeQueue = async (queueName, callback) => {
     if (!channel) {
         throw new Error("Channel is not created yet");

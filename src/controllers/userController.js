@@ -1,4 +1,4 @@
-//const rabbitmq = require('../rabbitmq');
+const rabbitmq = require('../rabbitmq');
 const bcrypt = require('bcryptjs');
 const db = require('../models/db');
 const User = db.User;
@@ -91,12 +91,14 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
+  const id = req.params.id;
   try {
     const deleted = await User.destroy({
-      where: { id: req.params.id }
+      where: { id: id }
     });
     if (deleted) {
-      res.status(204).json();
+      rabbitmq.publishToQueue('DELETE_USER', id);
+      res.status(204).json({ message: 'User deleted' });
     } else {
       res.status(404).json({ error: 'User not found' });
     }
